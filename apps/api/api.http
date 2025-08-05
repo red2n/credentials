@@ -1,0 +1,27 @@
+### API Test File for Credentials Management Service
+### Base URL: http://localhost:3000
+
+### Health Check Endpoint
+GET http://localhost:3000/health
+Content-Type: application/json
+
+###
+
+### Basic API Endpoint
+GET http://localhost:3000/api
+Content-Type: application/json
+
+###
+
+### Test with different ports (if needed)
+### Health check on different interface
+GET http://127.0.0.1:3000/health
+Content-Type: application/json
+
+###
+
+### API endpoint on different interface
+GET http://127.0.0.1:3000/api
+Content-Type: application/json
+
+###

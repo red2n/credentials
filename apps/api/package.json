@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node src/index.ts",
+    "dev": "node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
     "start": "node dist/index.js",
     "test": "node ./__tests__/api.test.js",
     "clean": "rimraf dist",
