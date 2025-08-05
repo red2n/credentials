@@ -1,0 +1,36 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "description": "API service for credentials management",
+  "author": "red2n <ksnavinkumar.diary@gmail.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "test": "node ./__tests__/api.test.js",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean"
+  },
+  "dependencies": {
+    "fastify": "^5.4.0",
+    "ioredis": "^5.7.0",
+    "pino": "^9.7.0"
+  },
+  "devDependencies": {
+    "pino-pretty": "^13.1.1",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2"
+  }
+}

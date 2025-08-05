@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.base.json",
+  // Any package-specific overrides here
+}

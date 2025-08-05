@@ -1,0 +1,29 @@
+{
+  "name": "credentials",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx lerna run build",
+    "build:all": "npx lerna run build",
+    "clean": "npx lerna run clean",
+    "clean:all": "npx -y lerna run clean && npx -y rimraf node_modules",
+    "dev": "npx lerna run dev --parallel",
+    "start": "npx lerna run start --parallel",
+    "test": "npx lerna run test"
+  },
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^24.2.0",
+    "lerna": "^8.2.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.2"
+  }
+}
