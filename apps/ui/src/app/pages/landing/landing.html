@@ -1,0 +1,71 @@
+<div class="landing-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1 class="logo">Credentials Manager</h1>
+      <div class="user-info">
+        <div class="user-details">
+          <span class="user-name">{{ user.name }}</span>
+          <span class="user-email">{{ user.email }}</span>
+        </div>
+        <button class="logout-button" (click)="logout()">
+          <span class="logout-icon">🚪</span>
+          Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <!-- Welcome Section -->
+      <section class="welcome-section">
+        <h2>Welcome back, {{ user.name }}!</h2>
+        <p>Manage your credentials securely and efficiently</p>
+      </section>
+
+      <!-- Actions Section -->
+      <section class="actions-section">
+        <button class="add-credential-button" (click)="addCredential()">
+          <span class="add-icon">➕</span>
+          Add New Credential
+        </button>
+      </section>
+
+      <!-- Credentials List -->
+      <section class="credentials-section">
+        <h3>Your Credentials</h3>
+        <div class="credentials-grid" *ngIf="credentials.length > 0; else noCredentials">
+          <div class="credential-card" *ngFor="let credential of credentials">
+            <div class="credential-header">
+              <div class="credential-info">
+                <h4 class="credential-name">{{ credential.name }}</h4>
+                <span class="credential-type">{{ credential.type }}</span>
+              </div>
+              <div class="credential-actions">
+                <button class="action-button edit" (click)="editCredential(credential.id)" title="Edit">
+                  ✏️
+                </button>
+                <button class="action-button delete" (click)="deleteCredential(credential.id)" title="Delete">
+                  🗑️
+                </button>
+              </div>
+            </div>
+            <div class="credential-footer">
+              <span class="last-used">Last used: {{ credential.lastUsed }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noCredentials>
+          <div class="no-credentials">
+            <div class="no-credentials-icon">🔐</div>
+            <h4>No credentials found</h4>
+            <p>Add your first credential to get started</p>
+          </div>
+        </ng-template>
+      </section>
+    </div>
+  </main>
+</div>
