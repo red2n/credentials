@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx lerna run build",
     "build:all": "npx lerna run build",
-    "clean": "npx lerna run clean",
+    "clean": "npx lerna run clean && npx -y rimraf node_modules",
     "clean:all": "npx -y lerna run clean && npx -y rimraf node_modules",
     "dev": "npx lerna run dev --parallel",
     "start": "npx lerna run start --parallel",
