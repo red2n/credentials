@@ -70,11 +70,48 @@ export class UsernameBloomFilter {
       'peter', 'quinn', 'ruby', 'sam', 'tina', 'uma', 'victor', 'wendy'
     ];
 
+    // Add directly to bloom filter and track in Redis
     for (const username of sampleUsernames) {
-      this.bloomFilter.add(username.toLowerCase());
+      const normalizedUsername = username.toLowerCase();
+      this.bloomFilter.add(normalizedUsername);
+      await this.redis.sadd(`${this.config.redisKey}:elements`, normalizedUsername);
     }
 
     await this.saveToRedis();
+  }
+
+  /**
+   * Populate the Bloom filter with usernames from the in-memory database
+   */
+  async populateFromDatabase(): Promise<void> {
+    try {
+      const { InMemoryUserDB } = await import('./inMemoryUserDB.js');
+      const userDB = InMemoryUserDB.getInstance();
+
+      // Initialize the database if not already done
+      await userDB.initialize(10000);
+
+      // Get all usernames from the database
+      const usernames = userDB.getAllUsernames();
+
+      console.log(`Populating Bloom filter with ${usernames.length} usernames from database...`);
+      const startTime = Date.now();
+
+      // Clear existing data
+      await this.clear();
+      await this.initialize();
+
+      // Add all usernames to the Bloom filter
+      for (const username of usernames) {
+        await this.addUsername(username);
+      }
+
+      const endTime = Date.now();
+      console.log(`Bloom filter populated with ${usernames.length} usernames in ${endTime - startTime}ms`);
+
+    } catch (error) {
+      throw new Error(`Failed to populate from database: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   /**

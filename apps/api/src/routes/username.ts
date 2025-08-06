@@ -210,7 +210,24 @@ export async function usernameRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // Redis health check
+  // Populate Bloom filter from in-memory database
+  fastify.post('/username/populate', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      await bloomFilter.populateFromDatabase();
+
+      fastify.log.info('Bloom filter populated from database');
+
+      return reply.send({
+        message: 'Bloom filter populated from database successfully'
+      });
+    } catch (error) {
+      fastify.log.error(error, 'Error populating bloom filter from database');
+      return reply.status(500).send({
+        error: 'Internal server error',
+        message: 'Failed to populate bloom filter from database'
+      });
+    }
+  });  // Redis health check
   fastify.get('/username/cache/health', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { RedisService } = await import('../services/redisService.js');

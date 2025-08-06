@@ -1,5 +1,6 @@
 import fastify from 'fastify';
 import { usernameRoutes } from './routes/username.js';
+import { userRoutes } from './routes/auth.js';
 import { RedisService } from './services/redisService.js';
 
 // Create Fastify instance with pino-pretty logger configuration
@@ -29,6 +30,9 @@ server.get('/api', async (request, reply) => {
 
 // Register username validation routes
 server.register(usernameRoutes, { prefix: '/api' });
+
+// Register user authentication routes
+server.register(userRoutes, { prefix: '/api' });
 
 const start = async (): Promise<void> => {
   try {
