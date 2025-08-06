@@ -173,6 +173,13 @@ export class InMemoryUserDB {
   }
 
   /**
+   * Get all users (for admin dashboard)
+   */
+  getAllUsers(): User[] {
+    return Array.from(this.users.values());
+  }
+
+  /**
    * Get database statistics
    */
   getStats(): {

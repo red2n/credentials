@@ -8,10 +8,20 @@
           <span class="user-name">{{ user.name }}</span>
           <span class="user-email">{{ user.email }}</span>
         </div>
-        <button class="logout-button" (click)="logout()">
-          <span class="logout-icon">🚪</span>
-          Logout
-        </button>
+        <div class="header-actions">
+          <a
+            href="/admin/login"
+            class="admin-link"
+            title="Admin Dashboard"
+          >
+            <span class="admin-icon">🛡️</span>
+            Admin
+          </a>
+          <button class="logout-button" (click)="logout()">
+            <span class="logout-icon">🚪</span>
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   </header>

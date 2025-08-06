@@ -1,6 +1,7 @@
 import fastify from 'fastify';
 import { usernameRoutes } from './routes/username.js';
 import { userRoutes } from './routes/auth.js';
+import { adminRoutes } from './routes/admin.js';
 import { RedisService } from './services/redisService.js';
 
 // Create Fastify instance with pino-pretty logger configuration
@@ -27,7 +28,7 @@ await server.register(import('@fastify/cors'), {
     'http://127.0.0.1:3000'   // Alternative same origin
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Admin-Key'],
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 204
@@ -48,6 +49,9 @@ server.register(usernameRoutes, { prefix: '/api' });
 
 // Register user authentication routes
 server.register(userRoutes, { prefix: '/api' });
+
+// Register admin routes
+server.register(adminRoutes, { prefix: '/api' });
 
 const start = async (): Promise<void> => {
   try {
