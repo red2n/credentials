@@ -1,4 +1,6 @@
 import fastify from 'fastify';
+import { usernameRoutes } from './routes/username.js';
+import { RedisService } from './services/redisService.js';
 
 // Create Fastify instance with pino-pretty logger configuration
 const server = fastify({
@@ -25,6 +27,9 @@ server.get('/api', async (request, reply) => {
   return { message: 'Hello from API service!' };
 });
 
+// Register username validation routes
+server.register(usernameRoutes, { prefix: '/api' });
+
 const start = async (): Promise<void> => {
   try {
     const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
@@ -35,6 +40,50 @@ const start = async (): Promise<void> => {
     process.exit(1);
   }
 };
+
+// Graceful shutdown handling
+const gracefulShutdown = async (signal: string): Promise<void> => {
+  server.log.info(`Received ${signal}, starting graceful shutdown...`);
+
+  try {
+    // Close server
+    await server.close();
+    server.log.info('HTTP server closed');
+
+    // Disconnect from Redis
+    await RedisService.disconnect();
+    server.log.info('Redis disconnected');
+
+    // Option to clear cache on shutdown (configurable via environment variable)
+    if (process.env.CLEAR_CACHE_ON_SHUTDOWN === 'true') {
+      server.log.info('Clearing cache on shutdown...');
+      const redis = RedisService.getInstance();
+      await redis.flushdb();
+      server.log.info('Cache cleared');
+    }
+
+    server.log.info('Graceful shutdown completed');
+    process.exit(0);
+  } catch (error) {
+    server.log.error(error, 'Error during graceful shutdown');
+    process.exit(1);
+  }
+};
+
+// Handle termination signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  server.log.error(error, 'Uncaught exception');
+  gracefulShutdown('UNCAUGHT_EXCEPTION');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  server.log.error({ reason, promise }, 'Unhandled rejection');
+  gracefulShutdown('UNHANDLED_REJECTION');
+});
 
 // Start server if this file is run directly
 if (process.argv[1] === new URL(import.meta.url).pathname) {
