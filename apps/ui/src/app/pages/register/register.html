@@ -1,0 +1,239 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <div class="logo">
+        <div class="logo-icon">🔐</div>
+      </div>
+      <h1>Create Your Account</h1>
+      <p>Join thousands of users managing their credentials securely</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="register-form" novalidate>
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username" class="form-label">
+          <span class="label-text">Username</span>
+          <span class="label-required">*</span>
+        </label>
+        <div class="input-wrapper">
+          <div class="input-container">
+            <div class="input-icon">👤</div>
+            <input
+              id="username"
+              type="text"
+              [value]="username()"
+              (input)="onUsernameChange($event.target.value)"
+              [class]="'form-control ' + getUsernameValidationClass()"
+              placeholder="Choose a unique username"
+              required
+              minlength="3"
+              maxlength="30"
+              autocomplete="username"
+            />
+            <div class="validation-indicator">
+              @if (usernameValidation().isValidating) {
+                <div class="spinner"></div>
+              } @else if (usernameValidation().isAvailable === true) {
+                <div class="success-icon">✓</div>
+              } @else if (usernameValidation().isAvailable === false) {
+                <div class="error-icon">✗</div>
+              }
+            </div>
+          </div>
+
+          @if (usernameValidation().message) {
+            <div class="validation-message" [class]="getUsernameValidationClass()">
+              <div class="message-icon">
+                @if (usernameValidation().isAvailable === true) {
+                  ✓
+                } @else if (usernameValidation().isAvailable === false) {
+                  ⚠
+                } @else {
+                  ℹ
+                }
+              </div>
+              {{ usernameValidation().message }}
+            </div>
+          }
+
+          @if (usernameValidation().error) {
+            <div class="validation-message error">
+              <div class="message-icon">⚠</div>
+              {{ usernameValidation().error }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email" class="form-label">
+          <span class="label-text">Email Address</span>
+          <span class="label-required">*</span>
+        </label>
+        <div class="input-wrapper">
+          <div class="input-container">
+            <div class="input-icon">📧</div>
+            <input
+              id="email"
+              type="email"
+              [value]="email()"
+              (input)="onEmailChange($event.target.value)"
+              class="form-control"
+              [class.valid]="email().includes('@') && email().includes('.')"
+              [class.error]="email() && (!email().includes('@') || !email().includes('.'))"
+              placeholder="Enter your email address"
+              required
+              autocomplete="email"
+            />
+            @if (email().includes('@') && email().includes('.')) {
+              <div class="validation-indicator">
+                <div class="success-icon">✓</div>
+              </div>
+            }
+          </div>
+          @if (email() && (!email().includes('@') || !email().includes('.'))) {
+            <div class="validation-message error">
+              <div class="message-icon">⚠</div>
+              Please enter a valid email address
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <span class="label-text">Password</span>
+          <span class="label-required">*</span>
+        </label>
+        <div class="input-wrapper">
+          <div class="input-container">
+            <div class="input-icon">🔒</div>
+            <input
+              id="password"
+              type="password"
+              [value]="password()"
+              (input)="onPasswordChange($event.target.value)"
+              class="form-control"
+              [class.valid]="isPasswordValid()"
+              [class.error]="password() && !isPasswordValid()"
+              placeholder="Create a strong password"
+              required
+              minlength="6"
+              autocomplete="new-password"
+            />
+            @if (isPasswordValid()) {
+              <div class="validation-indicator">
+                <div class="success-icon">✓</div>
+              </div>
+            }
+          </div>
+
+          <!-- Password Strength Indicator -->
+          @if (password()) {
+            <div class="password-strength">
+              <div class="strength-bars">
+                <div class="strength-bar" [class.active]="hasMinLength()"></div>
+                <div class="strength-bar" [class.active]="hasGoodLength()"></div>
+                <div class="strength-bar" [class.active]="hasUppercase()"></div>
+                <div class="strength-bar" [class.active]="hasNumber()"></div>
+              </div>
+              <span class="strength-text">
+                {{ passwordStrengthText() }}
+              </span>
+            </div>
+          }
+
+          @if (password() && !isPasswordValid()) {
+            <div class="validation-message error">
+              <div class="message-icon">⚠</div>
+              Password must be at least 6 characters long
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">
+          <span class="label-text">Confirm Password</span>
+          <span class="label-required">*</span>
+        </label>
+        <div class="input-wrapper">
+          <div class="input-container">
+            <div class="input-icon">🔐</div>
+            <input
+              id="confirmPassword"
+              type="password"
+              [value]="confirmPassword()"
+              (input)="onConfirmPasswordChange($event.target.value)"
+              class="form-control"
+              [class.valid]="doPasswordsMatch()"
+              [class.error]="confirmPassword() && !doPasswordsMatch()"
+              placeholder="Confirm your password"
+              required
+              autocomplete="new-password"
+            />
+            @if (doPasswordsMatch()) {
+              <div class="validation-indicator">
+                <div class="success-icon">✓</div>
+              </div>
+            }
+          </div>
+          @if (confirmPassword() && !doPasswordsMatch()) {
+            <div class="validation-message error">
+              <div class="message-icon">⚠</div>
+              Passwords do not match
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="form-group terms-group">
+        <label class="checkbox-label">
+          <input type="checkbox" class="checkbox" required>
+          <span class="checkmark"></span>
+          <span class="checkbox-text">
+            I agree to the <a href="#" class="link">Terms of Service</a> and
+            <a href="#" class="link">Privacy Policy</a>
+          </span>
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!isFormValid() || isSubmitting()"
+      >
+        @if (isSubmitting()) {
+          <div class="btn-spinner"></div>
+          <span>Creating Account...</span>
+        } @else {
+          <span>Create Account</span>
+          <div class="btn-icon">→</div>
+        }
+      </button>
+
+      <!-- Login Link -->
+      <div class="form-footer">
+        <div class="divider">
+          <span>or</span>
+        </div>
+        <p>
+          Already have an account?
+          <a routerLink="/login" class="link">Sign in here</a>
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Background Animation -->
+  <div class="background-animation">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+  </div>
+</div>

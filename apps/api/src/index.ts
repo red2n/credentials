@@ -18,6 +18,21 @@ const server = fastify({
   }
 });
 
+// Register CORS plugin to allow requests from the Angular frontend
+await server.register(import('@fastify/cors'), {
+  origin: [
+    'http://localhost:4200',  // Angular development server
+    'http://127.0.0.1:4200',  // Alternative localhost
+    'http://localhost:3000',  // Same origin
+    'http://127.0.0.1:3000'   // Alternative same origin
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+});
+
 // Health check route
 server.get('/health', async (request, reply) => {
   return { status: 'ok', service: 'api' };

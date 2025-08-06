@@ -24,6 +24,7 @@
     "prebuild": "npm run clean"
   },
   "dependencies": {
+    "@fastify/cors": "^11.1.0",
     "bloom-filters": "^3.0.4",
     "fastify": "^5.4.0",
     "ioredis": "^5.7.0",
