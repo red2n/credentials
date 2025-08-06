@@ -16,8 +16,7 @@ interface ValidationState {
 @Component({
   selector: 'app-register',
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './register.html',
-  styleUrl: './register.scss'
+  templateUrl: './register.html'
 })
 export class RegisterComponent {
   // Form fields as signals
@@ -25,6 +24,8 @@ export class RegisterComponent {
   email = signal('');
   password = signal('');
   confirmPassword = signal('');
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
   isSubmitting = signal(false);
 
   // Username validation state
@@ -166,6 +167,14 @@ export class RegisterComponent {
 
   onConfirmPasswordChange(value: string) {
     this.confirmPassword.set(value);
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword.set(!this.showPassword());
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword.set(!this.showConfirmPassword());
   }
 
   async onSubmit() {

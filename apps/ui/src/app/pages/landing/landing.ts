@@ -5,8 +5,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-landing',
   imports: [CommonModule],
-  templateUrl: './landing.html',
-  styleUrl: './landing.scss'
+  templateUrl: './landing.html'
 })
 export class LandingComponent {
   user = {

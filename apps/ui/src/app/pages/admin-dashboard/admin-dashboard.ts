@@ -6,10 +6,8 @@ import { AdminService, AdminUser, AdminStats } from '../../services/admin.servic
 
 @Component({
   selector: 'app-admin-dashboard',
-  standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './admin-dashboard.html',
-  styleUrl: './admin-dashboard.scss'
+  templateUrl: './admin-dashboard.html'
 })
 export class AdminDashboardComponent implements OnInit {
   private adminService = inject(AdminService);
@@ -36,7 +34,10 @@ export class AdminDashboardComponent implements OnInit {
   // Modal state
   showDeleteModal = signal(false);
   showBulkDeleteModal = signal(false);
-  userToDelete = signal<string | null>(null);
+  userToDelete = signal<AdminUser | null>(null);
+
+  // Expose Math for template use
+  readonly math = Math;
 
   // Computed properties
   hasSelectedUsers = computed(() => this.selectedUsers().length > 0);
@@ -118,18 +119,98 @@ export class AdminDashboardComponent implements OnInit {
     this.selectAll.set(false);
   }
 
-  onDeleteUser(username: string) {
-    this.userToDelete.set(username);
+  // Additional methods needed by template
+  onSearchChange(value: string) {
+    this.searchTerm.set(value);
+  }
+
+  bulkDeleteUsers() {
+    // Set modal state for bulk delete
+    this.showBulkDeleteModal.set(true);
+  }
+
+  toggleAllUsers() {
+    if (this.allUsersSelected()) {
+      this.selectedUsers.set([]);
+    } else {
+      const usernames = this.users().map(user => user.username);
+      this.selectedUsers.set(usernames);
+    }
+    this.selectAll.set(this.allUsersSelected());
+  }
+
+  toggleUserSelection(username: string) {
+    this.onSelectUser(username);
+  }
+
+  filteredUsers = computed(() => {
+    const search = this.searchTerm().toLowerCase();
+    return this.users().filter(user =>
+      user.username.toLowerCase().includes(search) ||
+      (user.email && user.email.toLowerCase().includes(search))
+    );
+  });
+
+  someUsersSelected = computed(() => {
+    const selected = this.selectedUsers();
+    const users = this.filteredUsers();
+    return selected.length > 0 && selected.length < users.length;
+  });
+
+  pagination = computed(() => ({
+    currentPage: this.currentPage(),
+    totalPages: this.totalPages(),
+    totalUsers: this.totalUsers(),
+    hasNextPage: this.currentPage() < this.totalPages(),
+    hasPrevPage: this.currentPage() > 1
+  }));
+
+  previousPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+      this.loadData();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+      this.loadData();
+    }
+  }
+
+  confirmDeleteUser(user: AdminUser) {
+    this.userToDelete.set(user);
     this.showDeleteModal.set(true);
   }
 
-  async confirmDeleteUser() {
-    const username = this.userToDelete();
-    if (!username) return;
+  cancelDelete() {
+    this.userToDelete.set(null);
+    this.showDeleteModal.set(false);
+  }
+
+  deleteUser() {
+    this.confirmDeleteUserAction();
+  }
+
+  // Make Math available in template
+  Math = Math;
+
+  onDeleteUser(username: string) {
+    const user = this.users().find(u => u.username === username);
+    if (user) {
+      this.userToDelete.set(user);
+      this.showDeleteModal.set(true);
+    }
+  }
+
+  async confirmDeleteUserAction() {
+    const user = this.userToDelete();
+    if (!user) return;
 
     try {
-      await this.adminService.deleteUser(username).toPromise();
-      this.successMessage.set(`User ${username} has been deleted successfully.`);
+      await this.adminService.deleteUser(user.username).toPromise();
+      this.successMessage.set(`User ${user.username} has been deleted successfully.`);
       this.showDeleteModal.set(false);
       this.userToDelete.set(null);
 

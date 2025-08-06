@@ -7,12 +7,12 @@ import { ApiService } from '../../services/api.service';
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './login.html',
-  styleUrl: './login.scss'
+  templateUrl: './login.html'
 })
 export class LoginComponent implements OnInit {
   username = signal('');
   password = signal('');
+  showPassword = signal(false);
   isLoading = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
@@ -43,6 +43,10 @@ export class LoginComponent implements OnInit {
   onPasswordChange(value: string) {
     this.password.set(value);
     this.errorMessage.set('');
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword.set(!this.showPassword());
   }
 
   async onSubmit() {
