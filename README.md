@@ -203,6 +203,50 @@ The system uses Redis for:
 - Caching layer
 - Statistics tracking
 
+#### Redis Monitoring Endpoints
+The API provides comprehensive Redis monitoring capabilities:
+
+**Health Check**
+```bash
+GET /api/redis/health
+```
+Returns detailed Redis health information including:
+- Connection status (`healthy`, `degraded`, `unhealthy`)
+- Response latency
+- Memory usage and pressure indicators
+- Key count and uptime
+- Redis version and error details
+
+**Statistics**
+```bash
+GET /api/redis/stats
+```
+Provides Redis performance metrics:
+- Total connections and commands processed
+- Operations per second
+- Cache hit/miss ratios
+- Evicted and expired key counts
+
+**Cache Analysis**
+```bash
+GET /api/redis/cache/analysis
+```
+Analyzes current cache contents:
+- Key count by pattern
+- Memory usage distribution
+- Cache efficiency metrics
+- Pattern-based insights
+
+**Cache Management**
+```bash
+DELETE /api/redis/cache/clear/:pattern  # Clear specific pattern
+DELETE /api/redis/cache/clear-all       # Clear all cache (admin only)
+```
+Selective cache clearing with pattern matching:
+- Use patterns like `user:*`, `session:*`
+- Prevents accidental full cache deletion
+- Returns count of deleted entries
+
 ### CORS Configuration
 CORS is configured to allow requests from:
 - `http://localhost:4200` (Angular dev server)

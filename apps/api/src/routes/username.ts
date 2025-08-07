@@ -234,12 +234,12 @@ export async function usernameRoutes(fastify: FastifyInstance) {
       const health = await RedisService.healthCheck();
       const memoryInfo = await RedisService.checkMemoryPressure();
 
-      const status = health.status === 'connected' ? 200 : 503;
+      const status = health.status === 'healthy' ? 200 : 503;
 
       return reply.status(status).send({
         redis: health,
         memory: memoryInfo,
-        message: health.status === 'connected'
+        message: health.status === 'healthy'
           ? 'Redis is healthy'
           : 'Redis connection issues detected'
       });
