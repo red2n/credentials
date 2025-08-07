@@ -273,16 +273,124 @@ This project is licensed under the ISC License.
 
 ---
 
-## 🚀 Getting Started Checklist
+## 🚀 Deployment Guide
 
+### 🏗️ Deployment Options
+
+We provide multiple deployment strategies optimized for different scaling needs:
+
+#### 1. **Kubernetes (Recommended for Production)**
+Best for high-traffic, enterprise deployments with auto-scaling requirements.
+
+```bash
+# Quick deployment
+./deploy.sh production deploy
+
+# Custom scaling
+./deploy.sh production scale 10 5  # 10 API replicas, 5 UI replicas
+```
+
+**Features:**
+- Auto-scaling based on CPU/memory usage
+- Redis cluster for distributed Bloom filters
+- Zero-downtime rolling deployments
+- Built-in monitoring and health checks
+
+#### 2. **Docker Compose (Great for Staging)**
+Simplified container orchestration for medium-scale deployments.
+
+```bash
+# Production compose deployment
+docker-compose -f docker-compose.production.yml up -d
+
+# With monitoring stack
+docker-compose -f docker-compose.production.yml --profile monitoring up -d
+```
+
+#### 3. **Development Setup**
+Local development with hot reload.
+
+```bash
+npm run dev  # Starts both API and UI
+```
+
+### 📊 Scaling Capabilities
+
+#### **Performance Targets:**
+- **Username Validation**: 10,000+ requests/second
+- **Concurrent Users**: 5,000+ simultaneous sessions
+- **API Response Time**: <50ms average
+- **UI Load Time**: <2s initial load
+- **Uptime**: 99.9% availability
+
+#### **Auto-scaling Configuration:**
+```yaml
+API Service: 3-20 replicas (CPU: 70%, Memory: 80%)
+UI Service: 2-10 replicas (CPU: 70%, Memory: 80%)
+Redis Cluster: 3-6 nodes with replication
+```
+
+### 🔧 Deployment Commands
+
+```bash
+# Build and deploy to production
+./deploy.sh production deploy
+
+# Scale services
+./deploy.sh production scale 15 8
+
+# Check deployment status
+./deploy.sh production status
+
+# View logs
+./deploy.sh production logs api
+
+# Rollback deployment
+./deploy.sh production rollback
+
+# Run load tests
+./deploy.sh production loadtest
+```
+
+### 🛠️ Infrastructure Requirements
+
+#### **Minimum Production Setup:**
+- **Kubernetes Cluster**: 3 nodes (2 CPU, 4GB RAM each)
+- **Redis**: 2GB memory, persistent storage
+- **Load Balancer**: Nginx Ingress Controller
+- **Monitoring**: Prometheus + Grafana (optional)
+
+#### **High-Scale Setup:**
+- **Kubernetes Cluster**: 10+ nodes (4 CPU, 8GB RAM each)
+- **Redis Cluster**: 6 nodes with clustering enabled
+- **CDN**: CloudFlare or AWS CloudFront
+- **Multi-region**: Active-active deployment
+
+### 🔍 Monitoring & Observability
+
+Built-in monitoring includes:
+- **Health Checks**: `/health` endpoint for all services
+- **Metrics**: Prometheus integration
+- **Logging**: Structured logging with Pino
+- **Alerting**: Kubernetes probes and HPA
+
+### 🚀 Getting Started Checklist
+
+#### Development:
 - [ ] Install Node.js v22.17.1+
 - [ ] Install and start Redis server
 - [ ] Clone repository
 - [ ] Run `npm install`
 - [ ] Run `npm run dev`
 - [ ] Navigate to `http://localhost:4200`
-- [ ] Test user registration
-- [ ] Test admin login at `/admin/login`
-- [ ] Explore the admin dashboard
 
-**Happy coding! 🎉**
+#### Production Deployment:
+- [ ] Set up Kubernetes cluster
+- [ ] Configure Docker registry
+- [ ] Update deployment scripts with your registry
+- [ ] Run `./deploy.sh production deploy`
+- [ ] Configure domain and SSL certificates
+- [ ] Set up monitoring (optional)
+- [ ] Run load tests
+
+**Happy scaling! 🚀**
