@@ -32,6 +32,17 @@ export class InMemoryUserDB {
     console.log(`Initializing in-memory database with ${userCount} random users...`);
     const startTime = Date.now();
 
+    // Add default admin user first
+    const adminUser: User = {
+      username: 'admin',
+      password: 'admin12345',
+      email: 'admin@credentials.com',
+      createdAt: new Date(),
+      lastLogin: new Date()
+    };
+    this.users.set('admin', adminUser);
+    console.log('✅ Default admin user created: admin / admin12345');
+
     // Generate random usernames and passwords
     for (let i = 0; i < userCount; i++) {
       const username = this.generateRandomUsername();
@@ -125,9 +136,29 @@ export class InMemoryUserDB {
   }
 
   /**
+   * Ensure default admin user exists
+   */
+  ensureAdminUser(): void {
+    if (!this.users.has('admin')) {
+      const adminUser: User = {
+        username: 'admin',
+        password: 'admin12345',
+        email: 'admin@credentials.com',
+        createdAt: new Date(),
+        lastLogin: new Date()
+      };
+      this.users.set('admin', adminUser);
+      console.log('✅ Default admin user restored: admin / admin12345');
+    }
+  }
+
+  /**
    * Authenticate a user
    */
   authenticate(username: string, password: string): User | null {
+    // Ensure admin user always exists
+    this.ensureAdminUser();
+
     const user = this.users.get(username.toLowerCase());
     if (user && user.password === password) {
       // Update last login
@@ -162,7 +193,15 @@ export class InMemoryUserDB {
    * Remove a user
    */
   removeUser(username: string): boolean {
-    return this.users.delete(username.toLowerCase());
+    const normalizedUsername = username.toLowerCase();
+
+    // Protect the default admin user from deletion
+    if (normalizedUsername === 'admin') {
+      console.log('⚠️ Cannot delete default admin user');
+      return false;
+    }
+
+    return this.users.delete(normalizedUsername);
   }
 
   /**

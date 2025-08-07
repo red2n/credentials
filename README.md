@@ -78,6 +78,17 @@ A modern, secure credential management system built with Angular and Fastify, fe
 
 This will start both the API server (port 3000) and Angular UI (port 4200) in parallel.
 
+### 🔑 Default Login Credentials
+
+#### **Regular User Login**
+- **Username**: `admin`
+- **Password**: `admin12345`
+- **URL**: `http://localhost:4200/login`
+
+#### **Admin Dashboard Access**
+- **Admin Key**: `admin123`
+- **URL**: `http://localhost:4200/admin/login`
+
 ### Available Scripts
 
 ```bash
@@ -383,6 +394,8 @@ Built-in monitoring includes:
 - [ ] Run `npm install`
 - [ ] Run `npm run dev`
 - [ ] Navigate to `http://localhost:4200`
+- [ ] **Test login with username: `admin` and password: `admin12345`**
+- [ ] **Test admin access with key: `admin123` at `/admin/login`**
 
 #### Production Deployment:
 - [ ] Set up Kubernetes cluster
