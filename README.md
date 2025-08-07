@@ -131,12 +131,312 @@ npm run build        # Build all applications
 npm run build:all    # Build all applications (alias)
 
 # Testing
-npm run test         # Run tests for all applications
+npm run test                     # Run all tests (unit + integration)
+npm run performance             # Run all performance tests
+npm run performance:baseline    # Quick baseline test (30s)
+npm run performance:general     # General API load test
+npm run performance:admin       # Admin operations test
+npm run performance:bloom       # Bloom filter stress test
+
+# Project Maintenance
+npm run setup                   # Initial project setup
+npm run organize                # Organize project structure
+npm run status                  # Show project health
+npm run security                # Run security audit
+npm run deploy                  # Prepare for deployment
 
 # Cleaning
 npm run clean        # Clean build artifacts
 npm run clean:all    # Clean all build artifacts and node_modules
 ```
+
+## 🧪 Testing
+
+The Credentials Management System includes a comprehensive testing suite covering unit tests, integration tests, and performance testing with k6.
+
+### Prerequisites for Testing
+
+Before running tests, ensure the following:
+
+1. **API Server is Running**
+   ```bash
+   # Start the development environment
+   npm run dev
+
+   # Or start just the API server
+   cd apps/api && npm run dev
+   ```
+
+2. **Redis Server is Running**
+   ```bash
+   redis-server
+   ```
+
+3. **k6 is Installed (for performance tests)**
+   ```bash
+   # k6 will be auto-installed if not present, or install manually:
+   # Linux
+   wget https://github.com/grafana/k6/releases/download/v0.47.0/k6-v0.47.0-linux-amd64.tar.gz
+   tar -xzf k6-v0.47.0-linux-amd64.tar.gz
+   sudo mv k6 /usr/local/bin/
+
+   # macOS
+   brew install k6
+   ```
+
+### Unit and Integration Tests
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests for specific applications
+cd apps/api && npm test          # API tests only
+cd apps/ui && npm test           # UI tests only
+
+# Run tests with coverage
+npm run test -- --coverage
+
+# Run tests in watch mode
+npm run test -- --watch
+```
+
+### Performance Testing with k6
+
+Our performance testing suite uses Grafana k6 to ensure the system performs well under load.
+
+#### Quick Performance Check
+
+```bash
+# Run a quick baseline performance test (30 seconds, 5 users)
+npm run performance:baseline
+```
+
+#### Full Performance Test Suite
+
+```bash
+# Run all performance tests
+npm run performance
+
+# Run specific performance tests
+npm run performance:general     # General API endpoints
+npm run performance:admin       # Admin operations
+npm run performance:bloom       # Bloom filter stress test
+```
+
+#### Advanced Performance Testing
+
+```bash
+# Test against different environments
+./tools/performance/k6/run-performance-tests.sh bloom https://staging.example.com
+./tools/performance/k6/run-performance-tests.sh all https://production.example.com
+
+# Custom test parameters
+K6_VUS=10 K6_DURATION=60s npm run performance:baseline
+ADMIN_KEY=your-key npm run performance:admin
+
+# Get help and see all options
+./tools/performance/k6/run-performance-tests.sh --help
+```
+
+### Performance Test Scenarios
+
+#### 1. Baseline Test (`performance:baseline`)
+- **Duration**: 30 seconds
+- **Virtual Users**: 5
+- **Purpose**: Quick health check and baseline metrics
+- **Endpoints Tested**: Health check, basic API endpoints
+
+#### 2. General Load Test (`performance:general`)
+- **Duration**: 5 minutes
+- **Virtual Users**: 1-100 (ramped)
+- **Purpose**: Test general API performance under normal load
+- **Endpoints Tested**:
+  - Authentication endpoints
+  - Username validation
+  - User profile operations
+  - Bloom filter operations
+
+#### 3. Admin Operations Test (`performance:admin`)
+- **Duration**: 3 minutes
+- **Virtual Users**: 1-50 (ramped)
+- **Purpose**: Test admin-specific operations
+- **Endpoints Tested**:
+  - Admin authentication
+  - User management operations
+  - Bulk operations
+  - Statistics endpoints
+
+#### 4. Bloom Filter Stress Test (`performance:bloom`)
+- **Duration**: 2 minutes
+- **Virtual Users**: 1-200 (ramped)
+- **Purpose**: High-throughput testing of Bloom filter operations
+- **Endpoints Tested**:
+  - Username validation (heavy load)
+  - Cache operations
+  - Bloom filter statistics
+
+### Performance Benchmarks
+
+Our system maintains the following performance standards:
+
+| Metric | Target | Excellent | Acceptable |
+|--------|--------|-----------|------------|
+| **Bloom Filter Response Time** | < 2ms | < 1ms | < 5ms |
+| **General API Response Time** | < 50ms | < 25ms | < 100ms |
+| **Admin Operations Response Time** | < 100ms | < 50ms | < 200ms |
+| **Error Rate** | < 0.1% | 0% | < 1% |
+| **Throughput (req/s)** | > 1000 | > 2000 | > 500 |
+
+### Test Results and Analysis
+
+#### Viewing Results
+
+```bash
+# Results are automatically saved with timestamps
+ls tools/performance/k6/results/
+
+# View latest test results
+./tools/performance/k6/analyze-k6-results.sh
+
+# Manual analysis
+cat tools/performance/k6/results/baseline_YYYYMMDD_HHMMSS.json
+```
+
+#### Sample Test Output
+
+```
+🔐 Credentials Management System - k6 Performance Testing Suite
+============================================================
+📊 Results Summary:
+• Total Requests: 15,234
+• Average Response Time: 1.48ms (Bloom filter)
+• 95th Percentile: 2.1ms
+• Error Rate: 0.00%
+• Throughput: 2,538 req/s
+============================================================
+```
+
+### Testing Best Practices
+
+#### Before Running Tests
+
+1. **Ensure Clean Environment**
+   ```bash
+   npm run clean
+   npm run build
+   ```
+
+2. **Check System Status**
+   ```bash
+   npm run status
+   ```
+
+3. **Verify API Health**
+   ```bash
+   curl http://localhost:3000/health
+   ```
+
+#### During Development
+
+1. **Run Tests Frequently**
+   ```bash
+   # Quick check during development
+   npm run performance:baseline
+   ```
+
+2. **Monitor Performance Trends**
+   ```bash
+   # Regular performance monitoring
+   npm run performance:bloom
+   ```
+
+3. **Test Before Commits**
+   ```bash
+   npm run test && npm run performance:baseline
+   ```
+
+### Troubleshooting Tests
+
+#### Common Issues
+
+**API Not Running**
+```bash
+Error: API not accessible. Status: 0
+```
+**Solution**: Start the API server with `npm run dev`
+
+**Redis Not Available**
+```bash
+Error: Redis connection failed
+```
+**Solution**: Start Redis server with `redis-server`
+
+**k6 Not Found**
+```bash
+k6: command not found
+```
+**Solution**: Install k6 or run `./tools/performance/k6/run-performance-tests.sh` (auto-installs)
+
+#### Debug Mode
+
+```bash
+# Enable debug logging for tests
+DEBUG=true npm run performance:baseline
+
+# Verbose k6 output
+k6 run --verbose tools/performance/k6/tests/load-test.js
+```
+
+### Continuous Integration
+
+Our testing suite is designed for CI/CD integration:
+
+```yaml
+# Example GitHub Actions workflow
+- name: Run Tests
+  run: |
+    npm run test
+    npm run performance:baseline
+
+- name: Performance Regression Check
+  run: |
+    npm run performance:bloom
+    # Check if response times are within acceptable limits
+```
+
+### Custom Testing
+
+#### Creating Custom Tests
+
+```bash
+# Copy existing test as template
+cp tools/performance/k6/tests/load-test.js tools/performance/k6/tests/my-test.js
+
+# Edit test parameters and scenarios
+# Run custom test
+k6 run tools/performance/k6/tests/my-test.js
+```
+
+#### Environment-Specific Testing
+
+```bash
+# Test against local environment
+npm run performance:baseline
+
+# Test against staging
+BASE_URL=https://staging.example.com npm run performance:baseline
+
+# Test against production (use with caution)
+BASE_URL=https://api.production.com npm run performance:baseline
+```
+
+### Test Documentation
+
+For detailed testing information, see:
+- **[K6 Testing Guide](docs/testing/K6_TESTING_GUIDE.md)** - Comprehensive k6 testing documentation
+- **[K6 Test Results](docs/testing/K6_TEST_RESULTS.md)** - Performance benchmarks and analysis
+- **[Project Organization](docs/PROJECT_ORGANIZATION.md)** - Testing infrastructure details
 
 ## 📚 API Documentation
 
