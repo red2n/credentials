@@ -89,6 +89,12 @@ This will start both the API server (port 3000) and Angular UI (port 4200) in pa
 - **Admin Key**: `admin123`
 - **URL**: `http://localhost:4200/admin/login`
 
+#### **System Dashboard Access**
+- **Access**: Available from Admin Dashboard → "System Monitor" button
+- **URL**: `http://localhost:4200/system/dashboard`
+- **Features**: Real-time Redis monitoring with 2-minute auto-refresh
+- **Authentication**: Requires admin login
+
 ### Available Scripts
 
 ```bash
@@ -185,6 +191,16 @@ npm run clean:all    # Clean all build artifacts and node_modules
 - Bulk operations
 - User statistics
 - Modern data table design
+
+#### System Dashboard (`/system/dashboard`)
+- **Real-time Redis monitoring** with 2-minute auto-refresh
+- **Health status tracking** (healthy/degraded/unhealthy)
+- **Performance metrics** (latency, operations/sec, hit rates)
+- **Memory usage analysis** with visual indicators
+- **Cache pattern analysis** showing key distribution
+- **Cache management tools** for selective/complete clearing
+- **Live status indicators** for system health and auto-refresh
+- **Admin-only access** protected by authentication guard
 
 ## 🔧 Configuration
 

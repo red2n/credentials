@@ -4,6 +4,7 @@ import { LandingComponent } from './pages/landing/landing';
 import { RegisterComponent } from './pages/register/register';
 import { AdminLoginComponent } from './pages/admin-login/admin-login';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard';
+import { SystemDashboardComponent } from './pages/system-dashboard/system-dashboard';
 import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
@@ -18,6 +19,11 @@ export const routes: Routes = [
   {
     path: 'admin/dashboard',
     component: AdminDashboardComponent,
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'system/dashboard',
+    component: SystemDashboardComponent,
     canActivate: [AdminGuard]
   },
   { path: '**', redirectTo: '/login' }

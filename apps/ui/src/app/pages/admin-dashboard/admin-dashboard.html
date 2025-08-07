@@ -13,13 +13,22 @@
             <span>Manage users and system configuration</span>
           </p>
         </div>
-        <button
-          (click)="logout()"
-          class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700 rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
-        >
-          <span class="text-lg">🚪</span>
-          <span>Logout</span>
-        </button>
+        <div class="flex items-center gap-3">
+          <button
+            (click)="goToSystemDashboard()"
+            class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-blue-200 hover:from-blue-200 hover:to-blue-300 text-blue-700 rounded-lg font-medium transition-all duration-200"
+          >
+            <span class="text-lg">📊</span>
+            <span>System Monitor</span>
+          </button>
+          <button
+            (click)="logout()"
+            class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700 rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
+          >
+            <span class="text-lg">🚪</span>
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>

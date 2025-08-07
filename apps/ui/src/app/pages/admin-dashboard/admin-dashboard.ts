@@ -265,6 +265,10 @@ export class AdminDashboardComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
+  goToSystemDashboard() {
+    this.router.navigate(['/system/dashboard']);
+  }
+
   getPages(): number[] {
     const total = this.totalPages();
     const current = this.currentPage();
