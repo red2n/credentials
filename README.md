@@ -1,6 +1,30 @@
 # 🔐 Credentials Management System
 
-A modern, secure credential management system built with Angular and Fastify, featuring real-time username validation using Bloom filters and Redis caching.
+A comprehensive, enterprise-grade credentials management system built with modern technologies and best practices.
+
+## 📋 Table of Contents
+
+- [Project Overview](#-project-overview)
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Quick Start](#-quick-start)
+- [Development](#-development)
+- [Testing](#-testing)
+- [Performance](#-performance)
+- [Security](#-security)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
+
+## 🚀 Project Overview
+
+The Credentials Management System is a secure, scalable solution for managing digital credentials with enterprise-level features including:
+
+- **Multi-tenant architecture** with role-based access control
+- **High-performance Redis caching** with Bloom filters for rapid lookups
+- **Real-time monitoring** with comprehensive health checks and analytics
+- **Microservices architecture** with API and UI separation
+- **Comprehensive testing suite** including unit, integration, and performance tests
+- **Production-ready deployment** with Kubernetes and Docker support
 
 ## ✨ Features
 

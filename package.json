@@ -10,7 +10,22 @@
     "clean:all": "npx -y lerna run clean && npx -y rimraf node_modules",
     "dev": "npx lerna run dev --parallel",
     "start": "npx lerna run start --parallel",
-    "test": "npx lerna run test"
+    "test": "npx lerna run test",
+    "lint": "npx lerna run lint",
+    "setup": "./tools/scripts/project-maintenance.sh setup",
+    "organize": "./tools/scripts/project-maintenance.sh organize",
+    "status": "./tools/scripts/project-maintenance.sh status",
+    "security": "./tools/scripts/project-maintenance.sh security",
+    "deploy": "./tools/scripts/project-maintenance.sh deploy",
+    "performance": "./tools/performance/k6/run-performance-tests.sh all",
+    "performance:baseline": "./tools/performance/k6/run-performance-tests.sh baseline",
+    "performance:general": "./tools/performance/k6/run-performance-tests.sh general",
+    "performance:admin": "./tools/performance/k6/run-performance-tests.sh admin",
+    "performance:bloom": "./tools/performance/k6/run-performance-tests.sh bloom",
+    "loadtest": "./tools/performance/k6/run-performance-tests.sh all",
+    "loadtest:general": "./tools/performance/k6/run-performance-tests.sh general",
+    "loadtest:admin": "./tools/performance/k6/run-performance-tests.sh admin",
+    "loadtest:bloom": "./tools/performance/k6/run-performance-tests.sh bloom"
   },
   "private": true,
   "workspaces": [
