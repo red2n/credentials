@@ -1,7 +1,7 @@
 {
   "name": "credentials",
   "version": "1.0.0",
-  "description": "",
+  "description": "A comprehensive, enterprise-grade credentials management system with Redis caching, Bloom filters, and real-time monitoring",
   "main": "index.js",
   "scripts": {
     "build": "npx lerna run build",
@@ -31,14 +31,42 @@
   "workspaces": [
     "apps/*"
   ],
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "credentials",
+    "authentication",
+    "redis",
+    "bloom-filter",
+    "fastify",
+    "angular",
+    "typescript",
+    "performance",
+    "monitoring",
+    "enterprise"
+  ],
+  "author": "Credentials Management Team",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@types/node": "^24.2.0",
-    "lerna": "^8.2.3",
+    "lerna": "^8.2.4",
     "rimraf": "^6.0.1",
     "typescript": "^5.9.2"
-  }
+  },
+  "overrides": {
+    "rimraf": "^6.0.1",
+    "glob": "^10.3.10",
+    "inflight": "npm:@tootallnate/inflight@^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/red2n/credentials.git"
+  },
+  "bugs": {
+    "url": "https://github.com/red2n/credentials/issues"
+  },
+  "homepage": "https://github.com/red2n/credentials#readme"
 }
