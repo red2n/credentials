@@ -3,6 +3,66 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, timer, switchMap, catchError, throwError, BehaviorSubject, startWith } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export interface SystemStatusData {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  timestamp: string;
+  uptime: {
+    process: number;
+    system: number;
+    processFormatted: string;
+    systemFormatted: string;
+  };
+  memory: {
+    rss: number;
+    heapUsed: number;
+    heapTotal: number;
+    external: number;
+  };
+  system: {
+    platform: string;
+    arch: string;
+    nodeVersion: string;
+    cpus: number;
+    loadAverage: number[];
+    totalMemory: number;
+    freeMemory: number;
+  };
+  database: {
+    totalUsers: number;
+    usersWithLastLogin: number;
+    averageUsernameLength: number;
+    memoryUsage: number;
+    status: 'connected' | 'empty';
+  };
+  redis: {
+    status: 'connected' | 'disconnected';
+    latency: number;
+    memory: {
+      used: number;
+      max: number;
+      percentage: number;
+      isUnderPressure: boolean;
+    };
+    keyCount: number;
+    version: string;
+  };
+  performance: {
+    responseTime: number;
+    pid: number;
+    environment: string;
+  };
+}
+
+export interface SystemMetricsData {
+  uptime: number;
+  memory: {
+    heapUsed: number;
+    heapTotal: number;
+  };
+  users: number;
+  timestamp: string;
+}
+
 export interface RedisHealthData {
   status: 'healthy' | 'unhealthy' | 'degraded';
   connected: boolean;
@@ -58,6 +118,7 @@ export interface ApiResponse<T> {
 export class SystemService {
   private readonly baseUrl = environment.apiUrl || 'http://localhost:3000/api';
   private readonly redisUrl = `${this.baseUrl}/redis`;
+  private readonly systemUrl = `${this.baseUrl}/system`;
 
   // BehaviorSubject to hold the latest system data
   private systemDataSubject = new BehaviorSubject<SystemMonitoringData | null>(null);
@@ -132,6 +193,33 @@ export class SystemService {
         observer.error(error);
       });
     });
+  }
+
+  /**
+   * Get comprehensive system status
+   */
+  getSystemStatus(): Observable<ApiResponse<SystemStatusData>> {
+    return this.http.get<ApiResponse<SystemStatusData>>(`${this.systemUrl}/status`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Get system health check
+   */
+  getSystemHealth(): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.systemUrl}/health`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Get system metrics (lightweight)
+   */
+  getSystemMetrics(): Observable<ApiResponse<SystemMetricsData>> {
+    return this.http.get<ApiResponse<SystemMetricsData>>(`${this.systemUrl}/metrics`).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**

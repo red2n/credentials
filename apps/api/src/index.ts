@@ -3,6 +3,7 @@ import { usernameRoutes } from './routes/username.js';
 import { userRoutes } from './routes/auth.js';
 import { adminRoutes } from './routes/admin.js';
 import { redisRoutes } from './routes/redis.js';
+import { systemRoutes } from './routes/system.js';
 import { RedisService } from './services/redisService.js';
 
 // Create Fastify instance with pino-pretty logger configuration
@@ -56,6 +57,9 @@ server.register(adminRoutes, { prefix: '/api' });
 
 // Register Redis monitoring routes
 server.register(redisRoutes, { prefix: '/api/redis' });
+
+// Register system monitoring routes
+server.register(systemRoutes, { prefix: '/api/system' });
 
 const start = async (): Promise<void> => {
   try {
