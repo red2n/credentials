@@ -34,6 +34,12 @@ dist/
 coverage/
 lcov.info
 
+# Performance test results
+tools/performance/k6/results/
+tools/performance/k6/reports/
+test-results.json
+test-coverage-output/
+
 # Logs
 lerna-debug.log
 isolate-*.log
